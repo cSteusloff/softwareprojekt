@@ -41,8 +41,8 @@ require_once 'SqlFormatter.php';
 $db = new oracleConnection();
 
 // SQL-Anfrage
-$query = "SELECT ID,Nachname,Vorname,Jahr FROM personen ORDER BY ID";
-$query2 = "SELECT ID,Nachname,Vorname,Jahr FROM personen WHERE Jahr > '25/01/2011'";
+$query = "SELECT * FROM personen ORDER BY ID";
+$query2 = "SELECT ID,Vorname,Nachname,Jahr FROM personen WHERE Jahr > '25/01/2011' ORDER BY ID";
 
 
 // Anzeigen
@@ -103,7 +103,11 @@ function validate($master_query,$user_query){
                     echo("incorrect Solution -  different  content");
                 }
             } else {
-                // TODO Sortierung
+                if(strcmp($master->printTable(),$user->printTable()) == 0){
+                    echo("correct Solution");
+                } else {
+                    echo("incorrect Solution - order");
+                }
             }
         } else {
             echo("incorrect Solution - number of data");

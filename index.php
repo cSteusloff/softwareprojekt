@@ -44,7 +44,34 @@
         });
     };
 </script>
-<?php 
+    <head>
+        <link rel='stylesheet' type='text/css' href='styles.css' />
+        <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
+        <script type='text/javascript' src='menu_jquery.js'></script>
+    </head>
+<body>
+<div id='cssmenu'>
+    <ul>
+        <li class='active'><a href='index.html'><span>Home</span></a></li>
+        <li class='has-sub'><a href='#'><span>Products</span></a>
+            <ul>
+                <li class='has-sub'><a href='index.php?a'><span>Widgets</span></a></li>
+                <li><a href='#'><span>Menus</span></a></li>
+                <li class='last'><a href='#'><span>Products</span></a></li>
+            </ul>
+        </li>
+        <li class='has-sub'><a href='#'><span>Company</span></a>
+            <ul>
+                <li><a href='#'><span>About</span></a></li>
+                <li class='last'><a href='#'><span>Location</span></a></li>
+            </ul>
+        </li>
+        <li class='last'><a href='#'><span>Contact</span></a></li>
+    </ul>
+</div>
+
+
+<?php
 require_once 'define.inc.php';
 require_once 'oracleconnection.class.php';
 require_once 'SqlFormatter.php';
@@ -66,6 +93,10 @@ $db->Query($query);
 // Tabelle ausgeben
 echo("Ziel-Ausgabe:");
 echo($db->printTable("task"));
+
+$db->Query($query);
+echo($db->printTable("task"));
+
 echo("Datensätze: ".$db->numRows()."<br>");
 ?>
 <br>
@@ -83,6 +114,8 @@ if(isset($_POST["code"])){
     echo(SqlFormatter::format($query2));
     // Ausführen
     $db->Query($query2);
+    var_dump($db->sqlquery);
+
     // Tabelle ausgeben
     echo($db->printTable("task"));
     echo("Datensätze: ".$db->numRows()."<br>");

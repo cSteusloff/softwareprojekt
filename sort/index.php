@@ -11,6 +11,7 @@
     table.task{
         border-collapse:collapse;
         border:1px solid green;
+        margin: 3px;
     }
 
     table.task th{
@@ -52,7 +53,7 @@ $query = "SELECT * FROM personen ORDER BY ID";
 ?>
 
 <div id="container" class="js-masonry"
-     data-masonry-options='{ "columnWidth": 20, "itemSelector": ".task" }'>>
+     data-masonry-options='{ "columnWidth": 2, "itemSelector": ".task" }'>>
 
         <?php
         // Ausführen & Tabelle ausgeben
@@ -80,7 +81,7 @@ $query = "SELECT * FROM personen ORDER BY ID";
 
     <?php
     // Ausführen & Tabelle ausgeben
-    $db->Query("SELECT Vorname FROM Personen WHERE ID > 3");
+    $db->Query("SELECT Nachname FROM Personen WHERE ID > 3");
     echo($db->printTable("task"));
     ?>
 

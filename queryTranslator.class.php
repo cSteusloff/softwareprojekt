@@ -24,6 +24,7 @@ class queryTranslator {
 		//print_r($parsed);
 		$positions = $this->transformarray($parsed);
 		
+		$i=0;
 		foreach($positions as $pos){
 			$inputquery = substr_replace($inputquery, $username, $pos+strlen($username)*$i, 0);
 			++$i;

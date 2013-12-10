@@ -1,0 +1,107 @@
+body {
+    margin: 0;
+    padding: 0;
+    color: #999;
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 12px;
+    line-height: 1.4em;
+    background-color: #665f5f;
+    background-repeat: repeat;
+    background-image: url(../images/body.jpg);
+}
+
+a, a:link, a:visited { color: #0299aa; font-weight: normal; text-decoration: none }
+a:hover { text-decoration: underline; }
+
+/* Struktur */
+
+#body_wrapper {
+    width: 100%;
+    background: url(../images/header.png) repeat-x top;
+}
+
+#wrapper {
+    width: 1000px;
+    margin: 0 auto;
+}
+
+#header {
+    width: 1000px;
+    height: 63px;
+    padding-top: 80px;
+    color: ghostwhite;
+}
+
+#cssmenu {
+}
+
+#main {
+    width: 1000px;
+    background-color: floralwhite;
+    margin: 0px;
+}
+
+#sidebar {
+    width: 210px;
+    padding: 5px 5px;
+}
+
+#content {
+    width: 750px;
+    padding: 5px 25px 5px 5px;
+}
+
+#footer {
+    width: 1000px;
+    text-align: center;
+    padding: 10px 0px;
+    background-color: floralwhite;
+    border-bottom: 2px solid #000000;
+}
+
+/* Helper class */
+.cleaner {
+    clear: both
+}
+
+.float_l {
+    float: left
+}
+
+.float_r {
+    float: right
+}
+
+/* Navigation */
+#sidebar .sidebar_list {
+    margin: 0;
+    padding: 0 0 10px;
+    list-style: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#sidebar .sidebar_list li {
+    display: block;
+    margin: 0;
+    padding: 5px 0;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #d3d3d3
+}
+
+#sidebar .sidebar_list li.first {
+    border-top: none
+}
+
+#sidebar .sidebar_list li.last {
+    border-bottom: none
+}
+
+#sidebar .sidebar_list li a {
+    color: #666;
+}
+
+#sidebar .sidebar_list li a:hover {
+    color: #000;
+    text-decoration: none
+}

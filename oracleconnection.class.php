@@ -33,6 +33,7 @@ class oracleConnection extends sqlConnection {
     public function openConnection()
     {
         try{
+            var_dump($this->username,$this->password,$this->hostname.'/'.$this->database.':'.$this->port,DB_CHARSET);
             $this->conn = oci_connect($this->username,$this->password,$this->hostname.'/'.$this->database.':'.$this->port,DB_CHARSET);
             if(!$this->conn){
                 $e = oci_error();

@@ -53,7 +53,7 @@ $query = "SELECT * FROM personen ORDER BY ID";
 ?>
 
 <div id="container" class="js-masonry"
-     data-masonry-options='{ "columnWidth": 2, "itemSelector": ".task" }'>>
+     data-masonry-options='{ "columnWidth": 2, "itemSelector": ".task" }'>
 
         <?php
         // Ausführen & Tabelle ausgeben
@@ -84,6 +84,54 @@ $query = "SELECT * FROM personen ORDER BY ID";
     $db->Query("SELECT Nachname FROM Personen WHERE ID > 3");
     echo($db->printTable("task"));
     ?>
+
+        <?php
+        // Ausführen & Tabelle ausgeben
+        $db->Query("SELECT * FROM Personen WHERE ID < 2 OR ID > 4 ORDER BY Nachname");
+        echo($db->printTable("task"));
+        ?>
+
+        <?php
+        // Ausführen & Tabelle ausgeben
+        $db->Query("SELECT * FROM Personen WHERE ID < 4 ORDER BY Vorname ");
+        echo($db->printTable("task"));
+        ?>
+
+        <?php
+        // Ausführen & Tabelle ausgeben
+        $db->Query("SELECT Nachname FROM Personen WHERE ID < 4 ORDER BY Vorname ");
+        echo($db->printTable("task"));
+        ?>
+
+        <?php
+        // Ausführen & Tabelle ausgeben
+        $db->Query("SELECT Nachname,Jahr FROM Personen WHERE ID < 4 ORDER BY Vorname ");
+        echo($db->printTable("task"));
+        ?>
+
+        <?php
+        // Ausführen & Tabelle ausgeben
+        $db->Query("SELECT * FROM Personen WHERE ID < 2 OR ID > 4 ORDER BY Nachname");
+        echo($db->printTable("task"));
+        ?>
+
+        <?php
+        // Ausführen & Tabelle ausgeben
+        $db->Query("SELECT * FROM Personen WHERE ID = 4 ORDER BY Nachname");
+        echo($db->printTable("task"));
+        ?>
+
+        <?php
+        // Ausführen & Tabelle ausgeben
+        //$db->Query("SELECT CONCAT(CONCAT(CONCAT(CONCAT(CONCAT(Vorname,' - '),Nachname),' ist '),Jahr),' alt und top fit!') as Spruch FROM Personen ORDER BY Nachname");
+        //echo($db->printTable("task"));
+        ?>
+
+        <?php
+        // Ausführen & Tabelle ausgeben
+        //$db->Query("SELECT Nachname || 'name' || Vorname FROM Personen");
+        //echo($db->printTable("task"));
+        ?>
 
 </div>
 

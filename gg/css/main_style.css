@@ -27,9 +27,28 @@ a:hover { text-decoration: underline; }
 
 #header {
     width: 1000px;
-    height: 63px;
-    padding-top: 80px;
+    height: 120px;
+    padding-top: 30px;
     color: ghostwhite;
+}
+
+#logo {
+	background: url('../images/logo.png') no-repeat;
+	width: 220px;
+	height: 120px;
+	float: left;
+}
+
+#title {
+	float: left;
+	vertical-align: middle;
+	height: 120px;
+	width: 560px;
+}
+
+#login {
+	float: left;
+	width: 220px;
 }
 
 #cssmenu {

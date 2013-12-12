@@ -12,8 +12,13 @@ require_once 'php-sql-parser.php';
 echo("<pre>");
 
 $qT = new queryTranslator();
-print_r($qT->translate('SELECT a from (SELECT * FROM some_table,hut) as nase,zug WHERE d > 5;',"JENS_"));
+//print_r($qT->translate('SELECT a from (SELECT * FROM some_table,hut) as nase,zug WHERE d > 5;',"JENS_"));
 
+//print_r($qT->translate('UPDATE table_name SET column1=value1,column2=value2 WHERE some_column=some_value;',"JENS_"));
+
+//print_r($qT->translate('INSERT INTO table_name (column1,column2,column3) VALUES (value1,value2,value3);',"JENS_"));
+
+print_r($qT->translate('DELETE FROM table_name WHERE some_column=some_value;;',"JENS_"));
 
 class queryTranslator {
 	
@@ -21,7 +26,7 @@ class queryTranslator {
     public function translate($inputquery, $username){
         $parser = new PHPSQLParser();
 		$parsed = $parser->parse($inputquery, TRUE);
-		//print_r($parsed);
+		print_r($parsed);
 		$positions = $this->transformarray($parsed);
 		
 		$i=0;

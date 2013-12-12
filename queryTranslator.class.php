@@ -12,13 +12,11 @@ require_once 'php-sql-parser.php';
 echo("<pre>");
 
 $qT = new queryTranslator();
-//print_r($qT->translate('SELECT a from (SELECT * FROM some_table,hut) as nase,zug WHERE d > 5;',"JENS_"));
+//Create X/ Delete V/ Update V/ Insert Into X
+//print_r($qT->translate("INSERT INTO kunden (name, adresse) VALUES ('Hans Meier', 'Wuppernweg 19')","JENS_"));
+//print_r($qT->translate("Create Table: CREATE TABLE t (  id INT(11) default NULL auto_increment,  s char(60) default NULL,  PRIMARY KEY (id))","JENS_"));
+print_r($qT->translate("UPDATE kunden SET name = 'Donald Duck', adresse = 'Entenhausen' WHERE name = 'Emil Entenich'","JENS_"));
 
-//print_r($qT->translate('UPDATE table_name SET column1=value1,column2=value2 WHERE some_column=some_value;',"JENS_"));
-
-//print_r($qT->translate('INSERT INTO table_name (column1,column2,column3) VALUES (value1,value2,value3);',"JENS_"));
-
-print_r($qT->translate('DELETE FROM table_name WHERE some_column=some_value;;',"JENS_"));
 
 class queryTranslator {
 	
@@ -26,7 +24,7 @@ class queryTranslator {
     public function translate($inputquery, $username){
         $parser = new PHPSQLParser();
 		$parsed = $parser->parse($inputquery, TRUE);
-		print_r($parsed);
+		//print_r($parsed);
 		$positions = $this->transformarray($parsed);
 		
 		$i=0;
@@ -54,10 +52,10 @@ class queryTranslator {
 		
 		//Returns ownly the positions matching to the tables
 		foreach($tempresult as $key => $val){
-			if(!is_numeric($tempresult[$key]))
+			if(!is_numeric($tempresult[$key]) && !is_null($tempresult[$key+1]) && is_numeric($tempresult[$key+1]))
 				$answer[] = $tempresult[$key+1]; // next element
 		}
-		//print_r($answer);
+		print_r($answer);
 		
 		return $answer;
     }

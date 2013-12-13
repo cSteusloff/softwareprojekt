@@ -6,6 +6,11 @@
  * Time: 15:13
  */
 
+error_reporting (E_ALL | E_STRICT);
+ini_set ('display_errors', 'On');
+require_once 'init_autoloader.php';
+
+
 use Zend\Form\View\Helper\Form;
 use Zend\Form\View\Helper\FormLabel;
 use Zend\Form\View\Helper\FormSubmit;
@@ -24,16 +29,28 @@ $loader = new Zend\Loader\StandardAutoloader(array('autoregister_zf' => true));
 // Register with spl_autoload:
 $loader->register();
 
+require_once 'lib/oracleConnection.class.php';
+$db = new oracleConnection();
+$prefix = "MASTER_";
+$db->Query("SELECT TABLE_NAME FROM ALL_TABLES WHERE UPPER(TABLE_NAME) LIKE '{$prefix}%'");
+
+$tables = array();
+
+while($db->Fetch(false)){
+    $tables[$db->row[0]] = substr(strtoupper($db->row[0]),strlen($prefix));
+}
+
+var_dump($tables);
+
+
 // Formular
 $form = new Zend\Form\Form();
 $form->setAttribute('action', '');
 $form->setAttribute ( 'method', 'post' );
 $output_form = true;
 
-// Inhalt für Auswahllisten
-//$activCategory = getCategories();
-//$countries = getCountries();
-//$germanState = getGermanState();
+var_dump($_POST);
+
 
 //////////////////////////////////////////////////////////////////////////////////
 /*
@@ -66,6 +83,19 @@ $form->add(array(
 ));
 
 $form->add(array(
+    'name' => 'tables',
+    'type' => 'Zend\Form\Element\Select',
+    'attributes' => array(
+        'multiple' => 'multiple',
+        'size' => '10',
+    ),
+    'options' => array(
+        'label' => 'Tabellen',
+       'options' => $tables,
+    ),
+));
+
+$form->add(array(
     'name' => 'permission',
     'type' => 'Zend\Form\Element\MultiCheckbox',
     'attributes' => array(
@@ -87,7 +117,6 @@ $form->add(array(
     'type' => 'Zend\Form\Element\Textarea',
     'attributes' => array(
         'id' => 'code',
-        'required' => 'required',
         'cols' => '70',
         'rows' => '5',
     ),
@@ -159,13 +188,21 @@ $inputFilter->add(array(
  * Auswertung
 */
 $form->setInputFilter($inputFilter);
+var_dump($_SERVER['REQUEST_METHOD']);
 
 if ('POST' == $_SERVER['REQUEST_METHOD']) {
     $form->setData($_POST);
 
     if ($form->isValid()) {
         $data = $form->getData();
+        echo("<pre>");
         var_dump($data);
+        echo("</pre>");
+
+        $db->Query("INSERT INTO SYS_TASK (Taskname,tasktext,permission,solution)
+                    VALUES ('".$data['tasktopic']."','".$data['tasktext']."','".$data['permission'][0]."','".$data['solution']."')");
+
+        var_dump($db->sqlquery);
     }
 }
 
@@ -190,6 +227,9 @@ $formError->setView($renderer);
 $formText = new FormText();
 $formText->setView($renderer);
 
+$formSelect = new FormSelect();
+$formSelect->setView($renderer);
+
 $formArea = new FormTextarea();
 $formArea->setView($renderer);
 
@@ -205,10 +245,6 @@ $form->prepare();
 // Output
 echo $formHelper->openTag($form);
 
-?>
-Formular
-<p>
-    <?php
     echo $formLabel($form->get('tasktopic'));
     echo $formText($form->get('tasktopic'));
     echo $formError($form->get('tasktopic'));
@@ -217,6 +253,9 @@ Formular
     echo $formArea($form->get('tasktext'));
     echo $formError($form->get('tasktext'));
     echo("<br><br>");
+    echo $formLabel($form->get('tables'));
+    echo $formSelect($form->get('tables'));
+    echo("<br><br>");
     echo $formLabel($form->get('permission'));
     echo $formCheck($form->get('permission'));
     echo $formError($form->get('permission'));
@@ -224,7 +263,6 @@ Formular
     echo $formLabel($form->get('solution'));
     echo $formArea($form->get('solution'));
     echo $formError($form->get('solution'));
-    ?>
-    <?= $formSubmit($form->get('send')) ?>
-</p>
-<?= $formHelper->closeTag() ?>
+    echo $formSubmit($form->get('send'));
+
+echo $formHelper->closeTag(); ?>

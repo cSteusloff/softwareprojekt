@@ -24,11 +24,24 @@
 </script>
 
 
-Tabellen werden über SQL-Developer angelegt mit dem präfix "master_"<br>
-Auswahl der Tabellen für diese Aufgabe<br>
-Überschrift<br>
-Text<br>
-Berechtigungen setzen (Select, Update/Insert)<br>
-Muster-Query<br>
+<!--Tabellen werden über SQL-Developer angelegt mit dem präfix "master_"<br>-->
+<!--Auswahl der Tabellen für diese Aufgabe<br>-->
+<!--Überschrift<br>-->
+<!--Text<br>-->
+<!--Berechtigungen setzen (Select, Update/Insert)<br>-->
+<!--Muster-Query<br>-->
 
-<? require_once 'site/form/formCreateTask.php'; ?>
+<?php
+
+var_dump(file_exists('site/form/formCreateTask.php')); // true
+var_dump(file_exists('form/formCreateTask.php')); // false
+
+//require_once("site/form/formCreateTask.php"); // Einbindung klappt nicht bei PHP 5.3.3 (aber >= PHP 5.4)
+require_once("form/formCreateTask.php"); // Einbindung bei PHP 5.3.3
+
+?>
+<?// require_once 'site/form/formCreateTask.php'; ?>
+
+<? include 'site/form/test.php'; ?>
+
+

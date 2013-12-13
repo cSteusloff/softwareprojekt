@@ -1,0 +1,160 @@
+<?php
+/**
+ * Project: Softwareprojekt
+ * User: Christian Steusloff
+ * Date: 13.12.13
+ * Time: 11:40
+ */
+?>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<script src="js/codemirror.js"></script>
+<link rel="stylesheet" href="css/codemirror.css">
+<script src="js/sql.js"></script>
+<script>
+    window.onload = function() {
+        window.editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+            mode: 'text/x-mysql',
+            indentWithTabs: true,
+            smartIndent: true,
+            lineNumbers: true,
+            matchBrackets : true,
+            autofocus: false
+        });
+    };
+</script>
+<style type="text/css">
+
+    div.task span{
+        font-weight: bold;
+        margin-left: 3px;
+    }
+
+    div.task table{
+        border-collapse:collapse;
+        border:1px solid green;
+        margin: 3px;
+    }
+
+    div.task table th{
+        background-color:green;
+        color:white;
+        border: 1px solid black;
+    }
+
+    div.task table td {
+        border: 1px solid black;
+    }
+
+    div.task table tr:nth-child(odd) {
+        background-color: cornsilk;
+    }
+    div.task table tr:nth-child(even) {
+        background-color: aquamarine;
+    }
+
+    #container{
+        width: 100%;
+        border: solid black 2px;
+    }
+</style>
+<script src="js/masonry.pkgd.min.js"></script>
+<?php
+
+
+$task_id = 1;
+
+require_once 'lib/oracleConnection.class.php';
+require_once 'lib/sqlFormatter.class.php';
+$db = new oracleConnection();
+$prefix = "MASTER_";
+$db->Query("SELECT TABLE_NAME FROM ALL_TABLES
+            WHERE UPPER(TABLE_NAME) LIKE '{$prefix}%COCKTAIL'
+            OR UPPER(TABLE_NAME) LIKE '{$prefix}%ZUTAT%'");
+
+$tables = array();
+
+while($db->Fetch(false)){
+$tables[] =$db->row[0];
+}
+
+var_dump($tables);
+
+$solution = "SELECT c.cname as Cocktail,
+                    z.zname as Zutat,
+                    zc.menge as Menge
+             FROM MASTER_Cocktail c, MASTER_Zutat z, MASTER_Zutat_Cocktail zc
+             WHERE c.cid = zc.cid
+             AND zc.zid = z.zid
+             AND alkoholisch LIKE 'y'";
+
+echo("<p>Lösung:<br>");
+echo(SqlFormatter::format($solution));
+echo("<p>");
+?>
+
+<div id="container" class="js-masonry"
+     data-masonry-options='{ "columnWidth": 2, "itemSelector": ".task" }'>
+    <?php
+
+    foreach($tables as $table){
+        $db->Query("SELECT * FROM {$table}");
+        echo($db->printTable("task",substr(strtoupper($table),strlen($prefix))));
+    }
+    ?>
+</div>
+
+
+<form action="" method="post">
+    <textarea id="code" name="code" rows="5"><?php echo isset($_POST["code"]) ? $_POST["code"] : "SELECT
+  c.cname as Cocktail,
+  z.zname as Zutat,
+  zc.menge as Menge
+FROM
+  (SELECT cid,cname FROM MASTER_Cocktail WHERE alkoholisch != 'n') c
+INNER JOIN MASTER_Zutat_Cocktail zc ON c.cid = zc.cid
+INNER JOIN MASTER_Zutat z ON zc.zid = z.zid"?></textarea>
+    <input type="submit" value="testen">
+</form>
+
+<?php
+if(!empty($_POST["code"])){
+    require_once 'lib/validate.inc.php';
+    //require_once 'lib/queryTranslator.class.php';
+
+    echo("<pre>");
+    var_dump($_POST["code"]);
+
+//    $qT = new queryTranslator();
+//    $query = $qT->translate($_POST["code"],"MASTER_");
+//    var_dump($query);
+
+    // Syntax-Check!
+
+    $db->Query($solution);
+    echo $db->printTable("task");
+
+    $db->Query($_POST["code"]);
+    echo $db->printTable("task");
+
+    echo("<h1>");
+    @validate($solution,$_POST["code"]);
+    echo("</h1>");
+}
+
+
+
+
+// SQL-Primary Key auslesen:
+
+//SELECT cols.table_name, cols.column_name, cols.position, cons.status, cons.owner
+//FROM all_constraints cons, all_cons_columns cols
+//WHERE cols.table_name = 'MASTER_COCKTAIL'
+//AND cons.constraint_type = 'P'
+//AND cons.constraint_name = cols.constraint_name
+//AND cons.owner = cols.owner
+//ORDER BY cols.table_name, cols.position;
+
+
+
+
+?>

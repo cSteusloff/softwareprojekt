@@ -5,6 +5,7 @@
  * Time: 19:26
  */
 
+require_once 'define.inc.php';
 require_once 'sqlConnection.class.php';
 
 class oracleConnection extends sqlConnection {
@@ -33,7 +34,7 @@ class oracleConnection extends sqlConnection {
     public function openConnection()
     {
         try{
-            var_dump($this->username,$this->password,$this->hostname.'/'.$this->database.':'.$this->port,DB_CHARSET);
+            //var_dump($this->username,$this->password,$this->hostname.'/'.$this->database.':'.$this->port,DB_CHARSET);
             $this->conn = oci_connect($this->username,$this->password,$this->hostname.'/'.$this->database.':'.$this->port,DB_CHARSET);
             if(!$this->conn){
                 $e = oci_error();
@@ -213,15 +214,20 @@ class oracleConnection extends sqlConnection {
      * @param string $classname - css class from table
      * @return string
      */
-    public function printTable($classname = null){
+    public function printTable($classname = null,$tablename = null){
         if(!empty($this->recordset)){
-            $tablestr = "<table ";
+            $tablestr = "<div ";
             if(is_null($classname)){
-                $tablestr .= ">\n";
+            $tablestr .= ">\n";
             } else {
                 $tablestr .= "class='".$classname."'>\n";
             }
+            if(!is_null($tablename)){
+                $tablestr .= "<span>{$tablename}</span>";
+            }
+            $tablestr .= "<table>\n";
             $tablestr .= "<thead><tr>\n";
+
             for($i=1;$i <= $this->numColumns();$i++){
                 $tablestr .= "<th>";
                 $tablestr .= ucfirst(strtolower($this->getFieldname($i)));
@@ -237,6 +243,7 @@ class oracleConnection extends sqlConnection {
             }
             $tablestr .= "<tbody></table>\n";
 
+            $tablestr .= "</div>";
             return $tablestr;
         } else {
             return "";

@@ -7,7 +7,8 @@
     <link rel='stylesheet' type='text/css' href='css/main_style.css' />
 
     <?php
-    error_reporting (E_ALL | E_STRICT);
+    //error_reporting (E_ALL | E_STRICT);
+    error_reporting (E_ALL);
     ini_set ('display_errors', 'On');
     require_once 'init_autoloader.php';
 
@@ -38,7 +39,7 @@
                             <li class="first"><a href="index.php">Votierungsübersicht</a></li>
                             <li><a href="index.php?section=createtask">Aufgabe erstellen</a></li>
                             <li><a href="index.php?section=exampletask">Aufgabe lösen</a></li>
-                            <li><a href="index.php">Testumgebung</a></li>
+                            <li><a href="index.php?section=testenvironment">Testumgebung</a></li>
                             <li class="last"><a href="index.php">Übungsblätter</a></li>
                         </ul>
                     </div>

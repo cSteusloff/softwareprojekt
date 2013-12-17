@@ -18,6 +18,8 @@ if(isset($_GET) && isset($_GET["section"])){
 			break;
         case "exampletask" : require_once 'site/exampleTask.phtml';
             break;
+        case "testenvironment" : require_once 'site/testEnvironment.phtml';
+            break;
 		default: require_once 'site/welcome.phtml';
 	}
 } else {

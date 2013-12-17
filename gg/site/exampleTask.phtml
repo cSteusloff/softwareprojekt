@@ -59,87 +59,134 @@
 </style>
 <script src="js/masonry.pkgd.min.js"></script>
 <?php
-
-
-$task_id = 1;
-
 require_once 'lib/oracleConnection.class.php';
 require_once 'lib/sqlFormatter.class.php';
-$db = new oracleConnection();
-$prefix = "MASTER_";
-$db->Query("SELECT TABLE_NAME FROM ALL_TABLES
-            WHERE UPPER(TABLE_NAME) LIKE '{$prefix}%COCKTAIL'
-            OR UPPER(TABLE_NAME) LIKE '{$prefix}%ZUTAT%'");
-
-$tables = array();
-
-while($db->Fetch(false)){
-$tables[] =$db->row[0];
-}
-
-var_dump($tables);
-
-$solution = "SELECT c.cname as Cocktail,
-                    z.zname as Zutat,
-                    zc.menge as Menge
-             FROM MASTER_Cocktail c, MASTER_Zutat z, MASTER_Zutat_Cocktail zc
-             WHERE c.cid = zc.cid
-             AND zc.zid = z.zid
-             AND alkoholisch LIKE 'y'";
-
-echo("<p>Lösung:<br>");
-echo(SqlFormatter::format($solution));
-echo("<p>");
+require_once 'lib/taskHandler.php';
+require_once 'lib/taskHelper.php';
 ?>
 
-<div id="container" class="js-masonry"
-     data-masonry-options='{ "columnWidth": 2, "itemSelector": ".task" }'>
-    <?php
-
-    foreach($tables as $table){
-        $db->Query("SELECT * FROM {$table}");
-        echo($db->printTable("task",substr(strtoupper($table),strlen($prefix))));
-    }
-    ?>
-</div>
-
-
 <form action="" method="post">
-    <textarea id="code" name="code" rows="5"><?php echo isset($_POST["code"]) ? $_POST["code"] : "SELECT
-  c.cname as Cocktail,
-  z.zname as Zutat,
-  zc.menge as Menge
-FROM
-  (SELECT cid,cname FROM MASTER_Cocktail WHERE alkoholisch != 'n') c
-INNER JOIN MASTER_Zutat_Cocktail zc ON c.cid = zc.cid
-INNER JOIN MASTER_Zutat z ON zc.zid = z.zid"?></textarea>
-    <input type="submit" value="testen">
+    <select name="task">
+        <?php
+        $tH = new taskHandler();
+        foreach($tH->getSelect() as $key => $task){
+            echo("<option value='{$key}'>{$task}</option>");
+        }
+        ?>
+    </select>
+    <input type="submit" name="choice" value="anzeigen">
 </form>
 
 <?php
-if(!empty($_POST["code"])){
-    require_once 'lib/validate.inc.php';
-    //require_once 'lib/queryTranslator.class.php';
 
-    echo("<pre>");
-    var_dump($_POST["code"]);
+if(isset($_POST["choice"])){
 
-//    $qT = new queryTranslator();
-//    $query = $qT->translate($_POST["code"],"MASTER_");
-//    var_dump($query);
-
-    // Syntax-Check!
-
-    $db->Query($solution);
-    echo $db->printTable("task");
-
-    $db->Query($_POST["code"]);
-    echo $db->printTable("task");
-
-    echo("<h1>");
-    @validate($solution,$_POST["code"]);
-    echo("</h1>");
+    $task = new taskHelper($_POST['task']);
+    echo("<h2>Lösungs-Query</h2>");
+    echo(SqlFormatter::format($task->getSolution()));
+?>
+<div id="container" class="js-masonry" data-masonry-options='{ "columnWidth": 2, "itemSelector": ".task" }'>
+    <?php echo($task->printTable("task"));?>
+</div>
+<form action="" method="post">
+        <textarea id="code" name="code" rows="5"><?php echo isset($_POST["code"]) ? $_POST["code"] : "SELECT
+          c.cname as Cocktail,
+          z.zname as Zutat,
+          zc.menge as Menge
+        FROM
+          (SELECT cid,cname FROM MASTER_Cocktail WHERE alkoholisch != 'n') c
+        INNER JOIN MASTER_Zutat_Cocktail zc ON c.cid = zc.cid
+        INNER JOIN MASTER_Zutat z ON zc.zid = z.zid"?></textarea>
+        <input type="submit" value="testen">
+</form>
+<?php
 }
+    if(!empty($_POST["code"])){
+        require_once 'lib/validate.inc.php';
+        //require_once 'lib/queryTranslator.class.php';
+
+        echo("<pre>");
+        var_dump($_POST["code"]);
+
+    //    $qT = new queryTranslator();
+    //    $query = $qT->translate($_POST["code"],"MASTER_");
+    //    var_dump($query);
+
+        // Syntax-Check!
+        $db = new oracleConnection();
+        $db->Query($solution);
+        echo $db->printTable("task");
+
+        $db->Query($_POST["code"]);
+        echo $db->printTable("task");
+
+        echo("<h1>");
+        @validate($solution,$_POST["code"]);
+        echo("</h1>");
+    }
+
+//
+//
+//
+//}
+//
+//
+//
+//// TEST-UMGEBUNG
+//
+//$db = new oracleConnection();
+//$prefix = "MASTER_";
+//$db->Query("SELECT TABLE_NAME FROM ALL_TABLES
+//            WHERE UPPER(TABLE_NAME) LIKE '{$prefix}%COCKTAIL'
+//            OR UPPER(TABLE_NAME) LIKE '{$prefix}%ZUTAT%'");
+//
+//$tables = array();
+//
+//while($db->Fetch(false)){
+//$tables[] =$db->row[0];
+//}
+//
+//var_dump($tables);
+//
+//$solution = "SELECT c.cname as Cocktail,
+//                    z.zname as Zutat,
+//                    zc.menge as Menge
+//             FROM MASTER_Cocktail c, MASTER_Zutat z, MASTER_Zutat_Cocktail zc
+//             WHERE c.cid = zc.cid
+//             AND zc.zid = z.zid
+//             AND alkoholisch LIKE 'y'";
+//
+//echo("<p>Lösung:<br>");
+//echo(SqlFormatter::format($solution));
+//echo("<p>");
+//?>
+<!---->
+<!--<div id="container" class="js-masonry"-->
+<!--     data-masonry-options='{ "columnWidth": 2, "itemSelector": ".task" }'>-->
+<!--    --><?php
+//
+//    foreach($tables as $table){
+//        $db->Query("SELECT * FROM {$table}");
+//        echo($db->printTable("task",substr(strtoupper($table),strlen($prefix))));
+//    }
+//    ?>
+<!--</div>-->
+<!---->
+<!---->
+<!--<form action="" method="post">-->
+<!--    <textarea id="code" name="code" rows="5">--><?php //echo isset($_POST["code"]) ? $_POST["code"] : "SELECT
+//  c.cname as Cocktail,
+//  z.zname as Zutat,
+//  zc.menge as Menge
+//FROM
+//  (SELECT cid,cname FROM MASTER_Cocktail WHERE alkoholisch != 'n') c
+//INNER JOIN MASTER_Zutat_Cocktail zc ON c.cid = zc.cid
+//INNER JOIN MASTER_Zutat z ON zc.zid = z.zid"?><!--</textarea>-->
+<!--    <input type="submit" value="testen">-->
+<!--</form>-->
+
+<?php
+
 
 
 

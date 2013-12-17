@@ -70,6 +70,7 @@ abstract class sqlConnection {
      */
     public $sqlquery;
 
+
     /**
      * Abstract class to handle connections
      *

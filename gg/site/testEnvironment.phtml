@@ -1,0 +1,116 @@
+<?php
+/**
+ * Project: ss
+ * User: Christian Steusloff
+ * Date: 17.12.13
+ * Time: 17:06
+ */
+
+?>
+<!-- CSS / JS -->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<script src="js/codemirror.js"></script>
+<link rel="stylesheet" href="css/codemirror.css">
+<script src="js/masonry.pkgd.min.js"></script>
+<script src="js/sql.js"></script>
+<script>
+    window.onload = function() {
+        window.editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+            mode: 'text/x-mysql',
+            indentWithTabs: true,
+            smartIndent: true,
+            lineNumbers: true,
+            matchBrackets : true,
+            autofocus: false
+        });
+    };
+</script>
+<style type="text/css">
+
+    div.task span{
+        font-weight: bold;
+        margin-left: 3px;
+    }
+
+    div.task table{
+        border-collapse:collapse;
+        border:1px solid green;
+        margin: 3px;
+    }
+
+    div.task table th{
+        background-color:green;
+        color:white;
+        border: 1px solid black;
+    }
+
+    div.task table td {
+        border: 1px solid black;
+    }
+
+    div.task table tr:nth-child(odd) {
+        background-color: cornsilk;
+    }
+    div.task table tr:nth-child(even) {
+        background-color: aquamarine;
+    }
+
+    #container{
+        width: 100%;
+        border: solid black 2px;
+    }
+</style>
+<?php
+// TABELLEN anzeigen
+
+require_once 'lib/oracleConnection.class.php';
+require_once 'lib/sqlFormatter.class.php';
+require_once 'lib/taskHandler.php';
+require_once 'lib/taskHelper.php';
+require_once 'lib/queryTranslator.class.php';
+// Test-Umgebungs-Aufgabe
+$task = new taskHelper(1);
+echo($task->getText());
+?>
+<div id="container" class="js-masonry" data-masonry-options='{ "columnWidth": 2, "itemSelector": ".task" }'>
+    <?php echo($task->printTable("task"));?>
+</div>
+<?php
+// Eingabemaske
+?>
+<form action="" method="post">
+    <textarea id="code" name="code" rows="5"><?php echo isset($_POST["code"]) ? $_POST["code"] : ""?></textarea>
+    <input type="submit" name="testform" value="ausführen">
+</form>
+<?php
+// AUSGABE
+if(isset($_POST["testform"])){
+    echo(SqlFormatter::format($_POST["code"]));
+
+    $db = new oracleConnection();
+    $qT = new queryTranslator();
+    // JENS manipulator :-)
+    $query = $qT->translate($_POST["code"],"MASTER_");
+
+    echo("Test-Query:");
+    echo(SqlFormatter::format($query));
+    @$db->Query($query);
+
+
+
+
+    if(strlen($db->getErrortext())>0){
+?>
+        <fieldset>
+            <legend>Fehlerausgabe</legend>
+            <h2>
+            <?php echo $db->getErrortext(); ?>
+            </h2>
+        </fieldset>
+<?php
+    }
+    echo $db->printTable("task");
+
+}
+
+// HISTORY

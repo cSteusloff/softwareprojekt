@@ -104,10 +104,10 @@ $form->add(array(
     'options' => array(
         'label' => 'Berechtigung',
         'value_options' => array(
-            '0' => 'Select',
-            '1' => 'Insert/Update/Delete',
-            '2' => 'Create',
-            '3' => 'Drop',
+            '1' => 'Select',
+            '2' => 'Insert/Update/Delete',
+            '4' => 'Create',
+            '8' => 'Drop',
         ),
     ),
 ));
@@ -199,11 +199,15 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
         var_dump($data);
         echo("</pre>");
 
-        $db->Query("INSERT INTO SYS_TASK (Taskname,tasktext,permission,solution)
-                    VALUES ('".$data['tasktopic']."','".$data['tasktext']."','".$data['permission'][0]."','".$data['solution']."')");
-
+        require_once 'lib/taskHelper.php';
+        $tH = new taskHelper();
+        $tH->createTask($data['tasktopic'],$data['tasktext'],$data['tables'],$data['permission'],htmlspecialchars($data['solution']));
         var_dump($db->sqlquery);
     }
+
+
+
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////

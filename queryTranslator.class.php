@@ -16,12 +16,12 @@ $qT = new queryTranslator();
 //Create X/ Delete V/ Update V/ Insert Into X
 //print_r($qT->translate("INSERT INTO kunden (name, adresse) VALUES ('Hans Meier', 'Wuppernweg 19')","JENS_"));
 //print_r($qT->translate("Create Table: CREATE TABLE t (  id INT(11) default NULL auto_increment,  s char(60) default NULL,  PRIMARY KEY (id))","JENS_"));
-print_r($qT->translate("CREATE TABLE example (
-         id INT;
-         data VARCHAR(100)
-     );", "Jens_"));
+//print_r($qT->translate("CREATE TABLE example (
+//         id INT;
+//         data VARCHAR(100)
+//     );", "Jens_"));
 //print_r($qT->translate("UPDATE kunden SET name = 'Donald Duck', adresse = 'Entenhausen' WHERE name = 'Emil Entenich' Order by 'Haus'","JENS_"));
-/*print_r($qT->translate("
+print_r($qT->translate("
 SELECT 
   MASTER_Cocktail.cname as Cocktail, 
   z.zname as Zutat, 
@@ -32,7 +32,7 @@ FROM
   MASTER_Zutat_Cocktail zc 
 WHERE 
   c.cid = zc.cid AND zc.zid = z.zid AND alkoholisch LIKE 'y'", "JENS_"));
-*/
+
 //print_r($qT->translate("SELECT Affe FROM Djungel ORDER BY Banane","JENS_"));
 
 

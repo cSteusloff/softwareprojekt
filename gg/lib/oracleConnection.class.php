@@ -11,6 +11,19 @@ require_once 'sqlConnection.class.php';
 class oracleConnection extends sqlConnection {
 
     /**
+     * @var oci-object - error massage
+     */
+    private $errortext;
+
+    /**
+     * @return string
+     */
+    public function getErrortext()
+    {
+        return $this->errortext['message'];
+    }
+
+    /**
      * @param string $host
      * @param string $database
      * @param string $user
@@ -61,6 +74,7 @@ class oracleConnection extends sqlConnection {
             $this->sqlquery = empty($sql) ? $this->sqlquery : $sql;
             $this->recordset = oci_parse($this->conn,$this->sqlquery);
             oci_execute($this->recordset);
+            $this->errortext = oci_error($this->recordset);
         } catch(Exception $e){
             // TODO Ausgabe
         }
@@ -77,9 +91,9 @@ class oracleConnection extends sqlConnection {
         if(!empty($this->recordset)){
             try{
                 if($assoc == true){
-                    $this->row = oci_fetch_assoc($this->recordset);
+                    $this->row = @oci_fetch_assoc($this->recordset);
                 } else {
-                    $this->row = oci_fetch_array($this->recordset);
+                    $this->row = @oci_fetch_array($this->recordset);
                 }
                 return is_array($this->row);
             } catch(Exception $e){

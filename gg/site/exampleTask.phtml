@@ -59,18 +59,32 @@
 </style>
 <script src="js/masonry.pkgd.min.js"></script>
 <?php
-require_once 'lib/oracleConnection.class.php';
-require_once 'lib/sqlFormatter.class.php';
-require_once 'lib/taskHandler.php';
-require_once 'lib/taskHelper.php';
+require_once 'library/oracleConnection.class.php';
+require_once 'library/sqlFormatter.class.php';
+require_once 'library/taskHandler.php';
+require_once 'library/taskHelper.php';
+require_once 'library/queryTranslator.class.php';
+
+require_once 'library/sqlValidator.class.php';
+//use library\sqlValidator;
+
+
+
+$tH = new taskHandler();#
+
+var_dump($_POST);
+
 ?>
 
 <form action="" method="post">
     <select name="task">
         <?php
-        $tH = new taskHandler();
         foreach($tH->getSelect() as $key => $task){
-            echo("<option value='{$key}'>{$task}</option>");
+            if($_POST['task'] == $key){
+                echo("<option value='{$key}' selected='selected'>{$task}</option>");
+            } else {
+                echo("<option value='{$key}'>{$task}</option>");
+            }
         }
         ?>
     </select>
@@ -89,39 +103,44 @@ if(isset($_POST["choice"])){
     <?php echo($task->printTable("task"));?>
 </div>
 <form action="" method="post">
+        <input type="hidden" name="task" value="<?php echo($_POST['task']);?>">
         <textarea id="code" name="code" rows="5"><?php echo isset($_POST["code"]) ? $_POST["code"] : "SELECT
           c.cname as Cocktail,
           z.zname as Zutat,
           zc.menge as Menge
         FROM
-          (SELECT cid,cname FROM MASTER_Cocktail WHERE alkoholisch != 'n') c
-        INNER JOIN MASTER_Zutat_Cocktail zc ON c.cid = zc.cid
-        INNER JOIN MASTER_Zutat z ON zc.zid = z.zid"?></textarea>
-        <input type="submit" value="testen">
+          (SELECT cid,cname FROM Cocktail WHERE alkoholisch != 'n') c
+        INNER JOIN Zutat_Cocktail zc ON c.cid = zc.cid
+        INNER JOIN Zutat z ON zc.zid = z.zid"?></textarea>
+        <input type="submit" name="choice" value="testen">
 </form>
 <?php
 }
     if(!empty($_POST["code"])){
-        require_once 'lib/validate.inc.php';
-        //require_once 'lib/queryTranslator.class.php';
+        require_once 'library/validate.inc.php';
+        //require_once 'library/queryTranslator.class.php';
 
-        echo("<pre>");
-        var_dump($_POST["code"]);
-
-    //    $qT = new queryTranslator();
-    //    $query = $qT->translate($_POST["code"],"MASTER_");
-    //    var_dump($query);
+        $qT = new queryTranslator();
+        $query = $qT->translate($_POST["code"],"MASTER_");
+        echo(SqlFormatter::format($query));
 
         // Syntax-Check!
+        echo("<h2>Master Lösung</h2>");
         $db = new oracleConnection();
-        $db->Query($solution);
+        $task = new taskHelper($_POST['task']);
+        $db->Query($task->getSolution());
         echo $db->printTable("task");
 
-        $db->Query($_POST["code"]);
+        echo("<h2>studentische Lösung</h2>");
+        $db->Query($query);
         echo $db->printTable("task");
+
+        $validator = new \lib\sqlValidator\sqlValidator($db);
+        $validator->validate($task->getSolution(),$query);
+
 
         echo("<h1>");
-        @validate($solution,$_POST["code"]);
+        @validate($task->getSolution(),$query);
         echo("</h1>");
     }
 

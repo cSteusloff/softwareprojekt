@@ -18,6 +18,8 @@ class taskHandler {
         $db->Query("SELECT ID,TASKNAME FROM SYS_TASK ORDER BY TASKNAME");
         $select = array();
         while($db->Fetch()){
+            // ID = 1 is default value for test enviroment and no regular task
+            if($db->row['ID'] == 1) continue;
             $select[$db->row['ID']] = $db->row['TASKNAME'];
         }
         $db->closeConnection();

@@ -29,7 +29,7 @@ $loader = new Zend\Loader\StandardAutoloader(array('autoregister_zf' => true));
 // Register with spl_autoload:
 $loader->register();
 
-require_once 'lib/oracleConnection.class.php';
+require_once 'library/oracleConnection.class.php';
 $db = new oracleConnection();
 $prefix = "MASTER_";
 $db->Query("SELECT TABLE_NAME FROM ALL_TABLES WHERE UPPER(TABLE_NAME) LIKE '{$prefix}%'");
@@ -199,7 +199,7 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
         var_dump($data);
         echo("</pre>");
 
-        require_once 'lib/taskHelper.php';
+        require_once 'library/taskHelper.php';
         $tH = new taskHelper();
         $tH->createTask($data['tasktopic'],$data['tasktext'],$data['tables'],$data['permission'],htmlspecialchars($data['solution']));
         var_dump($db->sqlquery);

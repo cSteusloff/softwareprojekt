@@ -63,11 +63,11 @@
 <?php
 // TABELLEN anzeigen
 
-require_once 'lib/oracleConnection.class.php';
-require_once 'lib/sqlFormatter.class.php';
-require_once 'lib/taskHandler.php';
-require_once 'lib/taskHelper.php';
-require_once 'lib/queryTranslator.class.php';
+require_once 'library/oracleConnection.class.php';
+require_once 'library/sqlFormatter.class.php';
+require_once 'library/taskHandler.php';
+require_once 'library/taskHelper.php';
+require_once 'library/queryTranslator.class.php';
 // Test-Umgebungs-Aufgabe
 $task = new taskHelper(1);
 echo($task->getText());
@@ -95,9 +95,6 @@ if(isset($_POST["testform"])){
     echo("Test-Query:");
     echo(SqlFormatter::format($query));
     @$db->Query($query);
-
-
-
 
     if(strlen($db->getErrortext())>0){
 ?>

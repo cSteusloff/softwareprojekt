@@ -5,6 +5,8 @@
  * Time: 18:40
  */
 
+namespace lib\sqlConnection;
+
 abstract class sqlConnection {
     /**
      * The active connection
